@@ -6,23 +6,26 @@ import mchorse.bbs_mod.camera.clips.misc.AudioClip;
 import mchorse.bbs_mod.camera.utils.TimeUtils;
 import mchorse.bbs_mod.film.Film;
 import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.clips.Clip;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIListOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Chooses the audio clip a lip sync is generated from, asking only when it is ambiguous: the
- * film's only clip, or the only clip under the playback cursor, is taken as is.
+ * Chooses the audio clips a lip sync is generated from, asking only when it is ambiguous: audio
+ * clips selected in the camera editor are all taken, in film order; otherwise the film's only
+ * clip, or the only clip under the playback cursor, is taken as is.
  */
 public class AudioClipPicker
 {
-    public static void pick(Film film, int cursor, UIContext context, Consumer<AudioClip> callback)
+    public static void pick(Film film, List<Clip> selected, int cursor, UIContext context, Consumer<List<AudioClip>> callback)
     {
         List<AudioClip> clips = new ArrayList<>();
 
@@ -41,9 +44,27 @@ public class AudioClipPicker
             return;
         }
 
+        List<AudioClip> picked = new ArrayList<>();
+
+        for (Clip clip : selected)
+        {
+            if (clip instanceof AudioClip audio && clips.contains(audio))
+            {
+                picked.add(audio);
+            }
+        }
+
+        if (!picked.isEmpty())
+        {
+            picked.sort(Comparator.comparingInt((AudioClip clip) -> clip.tick.get()));
+            callback.accept(picked);
+
+            return;
+        }
+
         if (clips.size() == 1)
         {
-            callback.accept(clips.get(0));
+            callback.accept(clips);
 
             return;
         }
@@ -60,7 +81,7 @@ public class AudioClipPicker
 
         if (underCursor.size() == 1)
         {
-            callback.accept(underCursor.get(0));
+            callback.accept(underCursor);
 
             return;
         }
@@ -81,7 +102,7 @@ public class AudioClipPicker
             if (clip != null)
             {
                 panel[0].close();
-                callback.accept(clip);
+                callback.accept(List.of(clip));
             }
         });
 

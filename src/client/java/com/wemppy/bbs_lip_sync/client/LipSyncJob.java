@@ -47,6 +47,7 @@ public class LipSyncJob
     private final Language.Model model;
     private final Runnable onBaked;
     private final Consumer<IKey> onError;
+    private Runnable next;
 
     private volatile Stage stage = Stage.LOADING;
     private volatile int progress;
@@ -67,6 +68,14 @@ public class LipSyncJob
         this.clipDuration = clipDuration;
         this.onBaked = onBaked;
         this.onError = onError;
+    }
+
+    /** What runs on the client thread once this job is done, or heard no speech; not after a cancel or a failure. */
+    public LipSyncJob then(Runnable next)
+    {
+        this.next = next;
+
+        return this;
     }
 
     /** The running job, or a just-finished one for a moment; null otherwise. */
@@ -235,6 +244,16 @@ public class LipSyncJob
                     /* The library never loaded; nothing to free */
                 }
             }
+
+            /* Queued after the baking, so the next job starts once this one wrote its keyframes
+             * and let go of the model */
+            MinecraftClient.getInstance().execute(() ->
+            {
+                if ((this.stage == Stage.DONE || this.stage == Stage.NO_SPEECH) && this.next != null)
+                {
+                    this.next.run();
+                }
+            });
         }
     }
 
