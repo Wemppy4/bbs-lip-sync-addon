@@ -49,6 +49,7 @@ public class LanguagePicker
             panel[0].set(current.label());
         }
 
-        UIOverlay.addOverlay(context, panel[0], 240, 0.6F);
+        panel[0].w(240).h(0.6F);
+        UIOverlay.addOverlay(context, panel[0]);
     }
 }

@@ -58,6 +58,7 @@ public class UITextLipSyncOverlayPanel extends UIOverlayPanel
     {
         super(LipSyncKeys.TEXT_TITLE);
 
+        this.w(WIDTH);
         this.callback = callback;
 
         this.text = new UITextarea<>(null);
@@ -94,12 +95,6 @@ public class UITextLipSyncOverlayPanel extends UIOverlayPanel
 
         this.text.cursor.set(lines.size() - 1, lines.get(lines.size() - 1).text.length());
         parent.getContext().focus(this.text);
-    }
-
-    @Override
-    public int getPreferredWidth()
-    {
-        return WIDTH;
     }
 
     @Override

@@ -70,6 +70,7 @@ public class UIModelDownloadOverlayPanel extends UIOverlayPanel
     {
         super(LipSyncKeys.MODEL_TITLE);
 
+        this.w(WIDTH);
         this.current = language;
 
         this.card = new Card();
@@ -161,12 +162,6 @@ public class UIModelDownloadOverlayPanel extends UIOverlayPanel
         {
             MinecraftClient.getInstance().keyboard.setClipboard(model.url());
         }
-    }
-
-    @Override
-    public int getPreferredWidth()
-    {
-        return WIDTH;
     }
 
     @Override

@@ -113,7 +113,8 @@ public class AudioClipPicker
             panel[0].setValue(label(clips.indexOf(underCursor.get(0)), underCursor.get(0)));
         }
 
-        UIOverlay.addOverlay(context, panel[0], 320, 0.6F);
+        panel[0].w(320).h(0.6F);
+        UIOverlay.addOverlay(context, panel[0]);
     }
 
     private static String label(int index, AudioClip clip)

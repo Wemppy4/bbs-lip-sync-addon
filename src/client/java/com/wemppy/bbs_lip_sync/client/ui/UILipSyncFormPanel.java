@@ -330,7 +330,8 @@ public class UILipSyncFormPanel<T extends Form> extends UIFormPanel<T>
                 panel[0].set(current);
             }
 
-            UIOverlay.addOverlay(context, panel[0], 240, 0.6F);
+            panel[0].w(240).h(0.6F);
+            UIOverlay.addOverlay(context, panel[0]);
         }
     }
 
