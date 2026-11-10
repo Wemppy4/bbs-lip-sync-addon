@@ -63,6 +63,7 @@
     "bbs_lip_sync.ui.progress.done": "Done: %d keyframes",
     "bbs_lip_sync.ui.progress.no_speech": "No speech found, keyframes unchanged",
     "bbs_lip_sync.ui.progress.cancelled": "Lip sync cancelled",
+    "bbs_lip_sync.ui.words.shape": "Shape: %s",
 
     "bbs_lip_sync.ui.model.title": "Speech recognition model",
     "bbs_lip_sync.ui.model.message": "Downloaded once, works offline afterwards.",

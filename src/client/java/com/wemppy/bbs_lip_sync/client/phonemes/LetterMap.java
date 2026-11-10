@@ -172,6 +172,12 @@ public class LetterMap
         return viseme;
     }
 
+    /** Whether the letter is a vowel, the core of a syllable. */
+    public boolean isVowel(int letter)
+    {
+        return this.vowels.contains(letter) || this.vowels.contains(strip(letter));
+    }
+
     /** How long the letter tends to sound, relative to other letters. */
     public float weight(int letter)
     {

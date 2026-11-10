@@ -7,6 +7,7 @@ import com.wemppy.bbs_lip_sync.client.model.Languages;
 import com.wemppy.bbs_lip_sync.client.model.Word;
 import com.wemppy.bbs_lip_sync.client.phonemes.LetterMap;
 import com.wemppy.bbs_lip_sync.client.phonemes.TextSpeech;
+import com.wemppy.bbs_lip_sync.client.phonemes.Transcript;
 import com.wemppy.bbs_lip_sync.client.phonemes.VisemeTimeline;
 import com.wemppy.bbs_lip_sync.client.ui.UITextLipSyncOverlayPanel;
 import mchorse.bbs_mod.film.replays.Replay;
@@ -41,8 +42,8 @@ public class TextLipSync
     private static int lastTick;
     private static int lastTicks;
 
-    /** What a text turns into: the mouth shapes and how many ticks they take, closed mouth included. */
-    public record Plan(List<VisemeTimeline.Segment> segments, int ticks)
+    /** What a text turns into: the words, their mouth shapes and how many ticks they take, closed mouth included. */
+    public record Plan(List<Word> words, LetterMap map, List<VisemeTimeline.Segment> segments, int ticks)
     {
         public boolean hasSpeech()
         {
@@ -84,14 +85,14 @@ public class TextLipSync
 
         if (map == null)
         {
-            return new Plan(List.of(), 0);
+            return new Plan(List.of(), null, List.of(), 0);
         }
 
         List<Word> words = TextSpeech.words(text, map, speed);
         List<VisemeTimeline.Segment> segments = VisemeTimeline.segments(words, map, LipSyncSettings.minHold(), LipSyncSettings.minPause(), LipSyncSettings.closeDelay());
         int ticks = segments.isEmpty() ? 0 : (int) Math.ceil(segments.get(segments.size() - 1).end() * VisemeTimeline.TPS) + 1;
 
-        return new Plan(segments, ticks);
+        return new Plan(words, map, segments, ticks);
     }
 
     /** No anticipation: with no sound to get ahead of, the text's timing is the mouth's. */
@@ -104,6 +105,7 @@ public class TextLipSync
         int range = lastChannel.get() == channel && lastTick == tick ? Math.max(plan.ticks(), lastTicks) : plan.ticks();
 
         KeyframeBaker.bake(replay, channel, rig, keys, tick, range);
+        TranscriptStore.remember(panel.getData() == null ? null : panel.getData().getId(), channel, Transcript.build(plan.words(), plan.map(), tick, range, 0F));
         panel.getUndoHandler().getUndoManager().markLastUndoNoMerging();
         editor.updateChannelsList();
 

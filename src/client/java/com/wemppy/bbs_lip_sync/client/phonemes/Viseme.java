@@ -81,9 +81,15 @@ public enum Viseme
      */
     public static boolean isOwnColor(Color color)
     {
+        return byColor(color) != null;
+    }
+
+    /** The shape a keyframe was painted for, or null if the colour isn't one of ours. */
+    public static Viseme byColor(Color color)
+    {
         if (color == null)
         {
-            return false;
+            return null;
         }
 
         int rgb = color.getRGBColor();
@@ -92,11 +98,11 @@ public enum Viseme
         {
             if (close(rgb, viseme.rgb))
             {
-                return true;
+                return viseme;
             }
         }
 
-        return false;
+        return null;
     }
 
     private static boolean close(int a, int b)

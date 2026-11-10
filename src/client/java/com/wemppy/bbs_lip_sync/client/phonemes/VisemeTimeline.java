@@ -49,7 +49,7 @@ public class VisemeTimeline
     private static final float MIN_GAP = 0.5F;
 
     /** A word is never shorter than this (seconds), whatever the recognizer says. */
-    private static final float MIN_WORD = 0.05F;
+    static final float MIN_WORD = 0.05F;
 
     /** One mouth shape held from {@code start} to {@code end} (seconds from the clip start). */
     public record Segment(Viseme viseme, float start, float end)

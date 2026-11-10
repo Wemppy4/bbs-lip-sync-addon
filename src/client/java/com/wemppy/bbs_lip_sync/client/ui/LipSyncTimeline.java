@@ -15,8 +15,8 @@ import mchorse.bbs_mod.ui.framework.elements.utils.UIRenderable;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 /**
- * Hooks the addon into the replay keyframe timeline: context menu entries on pose and texture tracks and a
- * painter that draws the running job over its row. Called after every rebuild of the editor.
+ * Hooks the addon into the replay keyframe timeline: context menu entries on pose and texture tracks, the
+ * words of a finished lip sync over its row, and a painter that draws the running job over its row. Called after every rebuild of the editor.
  */
 public class LipSyncTimeline
 {
@@ -59,6 +59,14 @@ public class LipSyncTimeline
             menu.action(Icons.GLOBE, LipSyncKeys.LANGUAGE.format(name), () -> LanguagePicker.open(context, (picked) -> {}));
         });
 
+        LipSyncWords words = new LipSyncWords(keyframeEditor);
+
+        if (keyframeEditor.view.tooltip != null)
+        {
+            keyframeEditor.view.tooltip = words.wrapPreview(keyframeEditor.view.tooltip);
+        }
+
+        keyframeEditor.add(words);
         keyframeEditor.add(new UIRenderable((context) -> LipSyncProgressPainter.render(context, keyframeEditor)));
     }
 }

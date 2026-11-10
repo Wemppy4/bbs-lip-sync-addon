@@ -55,6 +55,8 @@ public class LipSyncKeys
     public static final IKey PROGRESS_NO_SPEECH = L10n.lang("bbs_lip_sync.ui.progress.no_speech");
     public static final IKey PROGRESS_CANCELLED = L10n.lang("bbs_lip_sync.ui.progress.cancelled");
 
+    public static final IKey WORDS_SHAPE = L10n.lang("bbs_lip_sync.ui.words.shape");
+
     public static final IKey MODEL_TITLE = L10n.lang("bbs_lip_sync.ui.model.title");
     public static final IKey MODEL_MESSAGE = L10n.lang("bbs_lip_sync.ui.model.message");
     public static final IKey MODEL_DOWNLOAD = L10n.lang("bbs_lip_sync.ui.model.download");

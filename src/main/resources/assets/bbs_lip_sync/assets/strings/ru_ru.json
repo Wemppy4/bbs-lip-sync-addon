@@ -63,6 +63,7 @@
     "bbs_lip_sync.ui.progress.done": "Готово: кадров %d",
     "bbs_lip_sync.ui.progress.no_speech": "Речь не найдена, кадры не изменены",
     "bbs_lip_sync.ui.progress.cancelled": "Липсинк отменён",
+    "bbs_lip_sync.ui.words.shape": "Форма: %s",
 
     "bbs_lip_sync.ui.model.title": "Модель распознавания речи",
     "bbs_lip_sync.ui.model.message": "Скачивается один раз, дальше работает без интернета.",

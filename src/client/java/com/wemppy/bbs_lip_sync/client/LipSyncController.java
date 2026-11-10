@@ -98,7 +98,7 @@ public class LipSyncController
         };
 
         new LipSyncJob(
-            replay, channel, rig, language, model,
+            panel.getData() == null ? null : panel.getData().getId(), replay, channel, rig, language, model,
             clip.audio.get(), clip.offset.get(), clip.tick.get(), clip.duration.get(),
             onBaked, (error) -> message(editor.getContext(), LipSyncKeys.ERROR_TITLE, error)
         ).then(() -> start(editor, panel, replay, channel, rig, clips.subList(1, clips.size()))).start();

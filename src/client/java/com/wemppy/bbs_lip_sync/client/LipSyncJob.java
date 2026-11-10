@@ -8,6 +8,7 @@ import com.wemppy.bbs_lip_sync.client.model.ModelStore;
 import com.wemppy.bbs_lip_sync.client.model.SpeechRecognizer;
 import com.wemppy.bbs_lip_sync.client.model.Word;
 import com.wemppy.bbs_lip_sync.client.phonemes.LetterMap;
+import com.wemppy.bbs_lip_sync.client.phonemes.Transcript;
 import com.wemppy.bbs_lip_sync.client.phonemes.VisemeTimeline;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.l10n.keys.IKey;
@@ -39,6 +40,7 @@ public class LipSyncJob
     public final int clipTick;
     public final int clipDuration;
 
+    private final String film;
     private final Replay replay;
     private final Link audio;
     private final int offset;
@@ -55,8 +57,9 @@ public class LipSyncJob
     private volatile long finishedAt;
     private volatile int written;
 
-    public LipSyncJob(Replay replay, KeyframeChannel channel, MouthRig rig, Language language, Language.Model model, Link audio, int offset, int clipTick, int clipDuration, Runnable onBaked, Consumer<IKey> onError)
+    public LipSyncJob(String film, Replay replay, KeyframeChannel channel, MouthRig rig, Language language, Language.Model model, Link audio, int offset, int clipTick, int clipDuration, Runnable onBaked, Consumer<IKey> onError)
     {
+        this.film = film;
         this.replay = replay;
         this.channel = channel;
         this.rig = rig;
@@ -194,9 +197,11 @@ public class LipSyncJob
                 return;
             }
 
+            float anticipation = LipSyncSettings.anticipation();
             List<VisemeTimeline.Key> keys = this.rig.isSmooth()
-                ? VisemeTimeline.keys(segments, this.clipTick, this.clipDuration, LipSyncSettings.anticipation())
-                : VisemeTimeline.steps(segments, this.clipTick, this.clipDuration, LipSyncSettings.anticipation());
+                ? VisemeTimeline.keys(segments, this.clipTick, this.clipDuration, anticipation)
+                : VisemeTimeline.steps(segments, this.clipTick, this.clipDuration, anticipation);
+            Transcript transcript = Transcript.build(words, letters, this.clipTick, this.clipDuration, anticipation);
 
             MinecraftClient.getInstance().execute(() ->
             {
@@ -210,6 +215,7 @@ public class LipSyncJob
                 try
                 {
                     this.written = KeyframeBaker.bake(this.replay, this.channel, this.rig, keys, this.clipTick, this.clipDuration);
+                    TranscriptStore.remember(this.film, this.channel, transcript);
                     this.onBaked.run();
                     this.finish(Stage.DONE);
                 }
